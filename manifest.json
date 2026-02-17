@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "Freedium Redirector",
+  "version": "1.0",
+  "description": "Detects Medium paywalls and redirects to Freedium.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.medium.com/*",
+    "*://medium.com/*"
+  ],
+  "action": {
+    "default_title": "Freedium Redirector"
+  },
+  "icons": {
+    "16": "icons/Icon.png",
+    "48": "icons/Icon.png",
+    "128": "icons/Icon.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.medium.com/*",
+        "*://medium.com/*"
+      ],
+      "js": [
+        "scripts/content.js"
+      ],
+      "css": [
+        "styles/styles.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "scripts/background.js"
+  }
+}
