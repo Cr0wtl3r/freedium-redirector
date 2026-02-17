@@ -13,7 +13,7 @@ A Chrome Extension that detects Medium paywalls and offers a seamless redirect t
 
 1.  **Download the Code**: Clone this repository or download the ZIP.
     ```bash
-    git clone https://github.com/yourusername/freedium-redirector.git
+    git clone https://github.com/Cr0wtl3r/freedium-redirector.git
     ```
 2.  **Open Chrome Extensions**:
     - Navigate to `chrome://extensions/` in your browser.
