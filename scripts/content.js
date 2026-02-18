@@ -1,28 +1,41 @@
 console.log("Freedium Redirector: Content script loaded.");
 
+function isMediumLikeHost(hostname) {
+  const host = hostname.toLowerCase();
+  const labels = host.split(".");
+  return labels.includes("medium");
+}
+
 function checkForPaywall() {
-    const pageText = document.body.innerText;
-    const isMemberOnlyText = /member-only story/i.test(pageText) || /upgrade to read/i.test(pageText);
+  if (!isMediumLikeHost(window.location.hostname)) {
+    return;
+  }
 
-    const contentTierMeta = document.querySelector('meta[property="article:content_tier"]');
-    const isMetered = contentTierMeta && contentTierMeta.content === 'metered';
+  const pageText = document.body.innerText;
+  const isMemberOnlyText =
+    /member-only story/i.test(pageText) || /upgrade to read/i.test(pageText);
 
-    const hasMemberStar = document.querySelector('svg[data-testid="header-member-star"]') ||
-        document.querySelector('.star-15px');
+  const contentTierMeta = document.querySelector(
+    'meta[property="article:content_tier"]',
+  );
+  const isMetered = contentTierMeta && contentTierMeta.content === "metered";
 
+  const hasMemberStar =
+    document.querySelector('svg[data-testid="header-member-star"]') ||
+    document.querySelector(".star-15px");
 
-    if (isMemberOnlyText || hasMemberStar) {
-        console.log("Freedium Redirector: Paywall/Member content detected.");
-        showBaner();
-    }
+  if (isMemberOnlyText || isMetered || hasMemberStar) {
+    console.log("Freedium Redirector: Paywall/Member content detected.");
+    showBaner();
+  }
 }
 
 function showBaner() {
-    if (document.getElementById('freedium-redirect-banner')) return;
+  if (document.getElementById("freedium-redirect-banner")) return;
 
-    const banner = document.createElement('div');
-    banner.id = 'freedium-redirect-banner';
-    banner.innerHTML = `
+  const banner = document.createElement("div");
+  banner.id = "freedium-redirect-banner";
+  banner.innerHTML = `
     <div class="freedium-banner-content">
       <div class="freedium-banner-header">
         <h3 class="freedium-title">Paywall Detected</h3>
@@ -38,35 +51,41 @@ function showBaner() {
     </div>
   `;
 
-    document.body.appendChild(banner);
+  document.body.appendChild(banner);
 
-    document.getElementById('freedium-close').addEventListener('click', removeBanner);
-    document.getElementById('freedium-dismiss').addEventListener('click', removeBanner);
-    document.getElementById('freedium-go').addEventListener('click', redirectToFreedium);
+  document
+    .getElementById("freedium-close")
+    .addEventListener("click", removeBanner);
+  document
+    .getElementById("freedium-dismiss")
+    .addEventListener("click", removeBanner);
+  document
+    .getElementById("freedium-go")
+    .addEventListener("click", redirectToFreedium);
 }
 
 function removeBanner() {
-    const banner = document.getElementById('freedium-redirect-banner');
-    if (banner) banner.remove();
+  const banner = document.getElementById("freedium-redirect-banner");
+  if (banner) banner.remove();
 }
 
 function redirectToFreedium() {
-    const currentUrl = window.location.href;
-    const freediumUrl = `https://freedium-mirror.cfd/${currentUrl}`;
-    window.location.href = freediumUrl;
+  const currentUrl = window.location.href;
+  const freediumUrl = `https://freedium-mirror.cfd/${currentUrl}`;
+  window.location.href = freediumUrl;
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', checkForPaywall);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", checkForPaywall);
 } else {
-    checkForPaywall();
+  checkForPaywall();
 }
 
 let lastUrl = location.href;
 new MutationObserver(() => {
-    const url = location.href;
-    if (url !== lastUrl) {
-        lastUrl = url;
-        setTimeout(checkForPaywall, 1000);
-    }
+  const url = location.href;
+  if (url !== lastUrl) {
+    lastUrl = url;
+    setTimeout(checkForPaywall, 1000);
+  }
 }).observe(document, { subtree: true, childList: true });
