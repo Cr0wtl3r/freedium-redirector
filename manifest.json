@@ -10,7 +10,9 @@
   ],
   "host_permissions": [
     "*://*.medium.com/*",
-    "*://medium.com/*"
+    "*://medium.com/*",
+    "*://medium.*.com/*",
+    "*://*.medium.*.com/*"
   ],
   "action": {
     "default_title": "Freedium Redirector"
@@ -24,7 +26,9 @@
     {
       "matches": [
         "*://*.medium.com/*",
-        "*://medium.com/*"
+        "*://medium.com/*",
+        "*://medium.*.com/*",
+        "*://*.medium.*.com/*"
       ],
       "js": [
         "scripts/content.js"
